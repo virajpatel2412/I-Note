@@ -89,7 +89,7 @@ nav ul li{
 }
 #desc{
     resize:vertical;
-    min-height: 70px;
+    min-height: 30px;
     max-height:max-content;
     padding: 1%;
 }

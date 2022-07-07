@@ -1,3 +1,4 @@
+
 <%@ page import="java.sql.*" %>
 
 <%  Class.forName("com.mysql.cj.jdbc.Driver");
@@ -11,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport"
               content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/style1.css">
+        <link rel="stylesheet" href="css/style.css">
         <title>Web Notes</title>
     </head>
 
@@ -19,7 +20,7 @@
         <div class="toggle">
             <div class="container main">
                 <h2>Add Notes</h2>
-                <form action="send" method="get" class="add-note">
+                <form action="send" method="post" class="add-note">
 
                     <table>
                         <tr>
@@ -69,10 +70,9 @@
                 <%
                     Statement st = conn.createStatement();
                     String query = "select * from inode order by Sr_no desc";
-
                     ResultSet rs = st.executeQuery(query);
                     while (rs.next()) {%>
-                <form action="delete" method="get">
+                <form action="delete" method="post">
                     <div class='card'>
                         <div class="close"> 
                             <button type="submit" class='delete_btn'>
@@ -117,7 +117,6 @@
                         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                     });
                 });
-
                 $('#addNote').on('click', function () {
                     $('.toggle').slideDown(500);
                 });
@@ -125,7 +124,6 @@
                 $('.closeNote').on('click', function () {
                     $('.toggle').slideUp(500);
                 });
-
             });
         </script>
 

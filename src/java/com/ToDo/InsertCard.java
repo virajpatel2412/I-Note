@@ -5,17 +5,18 @@
  */
 package com.ToDo;
 
-import java.sql.*;
+import com.entities.Note;
+import com.helper.FactoryProvider;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -25,51 +26,27 @@ import javax.servlet.http.HttpServletResponse;
 
 public class InsertCard extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) {
-        PrintWriter out;
-        try {
-            response.setContentType("text/html;charset=UTF-8");
-            out = response.getWriter();
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/viraj", "root", "system manager");
-
-            String title = request.getParameter("title");
-            String disc = request.getParameter("desc");
-            String query = "insert into inode values (null, '" + title + "', '" + disc + "', current_timestamp)";
-
-            Statement st = conn.createStatement();
-            int n = st.executeUpdate(query);
-            if (n > 0) {
-                response.sendRedirect("index.jsp");
-
-//                RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-//                rd.forward(request, response);
-            } else {
-                out.append("Not inserted ");
-            }
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println(ex.getMessage());
-        } catch (IOException ex) {
-            Logger.getLogger(InsertCard.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        PrintWriter out;
+        response.setContentType("text/html;charset=UTF-8");
+        out = response.getWriter();
+
+        String title = request.getParameter("title");
+        String disc = request.getParameter("desc");
+
+        Note newNote = new Note();
+        newNote.setTitle(title);
+        newNote.setDisc(disc);
+
+        SessionFactory factory = FactoryProvider.getFactory();
+        Session session = factory.openSession();
+        Transaction tr = session.beginTransaction();
+        session.save(newNote);
+        tr.commit();
+
+        response.sendRedirect("index.jsp");
+
     }
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }
